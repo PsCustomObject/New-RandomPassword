@@ -1,17 +1,16 @@
 ﻿function New-RandomPassword
 {
-	<#
+<#
 	.SYNOPSIS
 		Generates a new strong random password
 	
 	.DESCRIPTION
-	
-		Flexible function to generate random passowrds of 
+		Flexible function to generate random passowrds of
 		variable length using the RNGCryptoServiceProvider
 		to add as much enthropy as possible.
 		
 		By default function will print both the final password
-		and phoenitc version of it making  it easier for an operator 
+		and phoenitc version of it making  it easier for an operator
 		to read/communicate it verbally.
 		
 		If no parameters are specified a 12 characters long
@@ -63,12 +62,14 @@
 		cmdlet will be used otherwise built-in utility clip.exe
 		will be used.
 	
+	.PARAMETER NoPasswordSpell
+		A description of the NoPasswordSpell parameter.
+	
 	.EXAMPLE
-	
 		-------------------------- EXAMPLE 1 --------------------------
-	
+		
 		PS C:\> New-RandomPassword
-	
+		
 		Character Phonetic            Type
 		--------- --------            ----
 		,         Comma               Symbol
@@ -85,14 +86,14 @@
 		v         Victor              Lowercase Letter
 		
 		Final password is: ,W<bs#)EpWCv
-	
-	 	Description
-    	-----------
-
-    	Generates a new random password using the default length
-	
+		
+		Description
+		-----------
+		
+		Generates a new random password using the default length
+		
 		-------------------------- EXAMPLE 2 --------------------------
-	
+		
 		PS C:\> New-StrongPassword -CapitalCaseLetters 6 -LowerCaseLetters 6
 		
 		Character Phonetic Type
@@ -112,17 +113,17 @@
 		
 		
 		Final password is: eVGfasMXfSPd
-	
-	 	Description
-    	-----------
-
-    	Generates a new random password composed of 6 uppercase letters
+		
+		Description
+		-----------
+		
+		Generates a new random password composed of 6 uppercase letters
 		and 6 lowercase letters
-	
+		
 		-------------------------- EXAMPLE 3 --------------------------
-	
+		
 		PS C:\> New-StrongPassword -CapitalCaseLetters 6 -LowerCaseLetters 6 -Symbol 3
-
+		
 		Character Phonetic  Type
 		--------- --------  ----
 		G         Golf      Capital Letter
@@ -142,13 +143,16 @@
 		P         Papa      Capital Letter
 		
 		Final password is: GZ&LuQisy:c@OtP
-	
-	 	Description
-    	-----------
-
-    	Similar to Example 2 just will generate a password containing 3 symbols in
+		
+		Description
+		-----------
+		
+		Similar to Example 2 just will generate a password containing 3 symbols in
 		addition to 6 Uppercase letters and 6 Lowercase letters
-	#>
+	
+	.NOTES
+		Additional information about the function.
+#>
 	
 	[CmdletBinding(DefaultParameterSetName = 'Default',
 				   ConfirmImpact = 'Medium',
@@ -201,7 +205,12 @@
 		$ColorOutput,
 		[Parameter(Position = 5)]
 		[switch]
-		$PasswordToClipboard
+		$PasswordToClipboard,
+		[Parameter(ParameterSetName = 'Option')]
+		[Parameter(ParameterSetName = 'Default')]
+		[Alias('NoOuput')]
+		[switch]
+		$NoPasswordSpell
 	)
 	
 	Begin
@@ -407,7 +416,7 @@
 		$finalPassword = $returnPassword.AsciiCode -Join ''
 		$spellOutTable = $returnPassword |
 		Select-Object @{
-			Name   = 'Character'; Expression = { $_.'AsciiCode' }
+			Name    = 'Character'; Expression = { $_.'AsciiCode' }
 		}, 'Phonetic', 'Type'
 		
 		# Send password to clipboard
@@ -431,16 +440,19 @@
 			}
 		}
 		
-		# Colored output
-		if ($ColorOutput)
+		if (!$NoPasswordSpell)
 		{
-			Write-Host ($spellOutTable | Out-String) -ForegroundColor 'Green'
-			Write-Host $finalPassword
-		}
-		else
-		{
-			Write-Host ($spellOutTable | Out-String)
-			Write-Host "Final password is:" $finalPassword
+			# Colored output
+			if ($ColorOutput)
+			{
+				Write-Host ($spellOutTable | Out-String) -ForegroundColor 'Green'
+				Write-Host $finalPassword
+			}
+			else
+			{
+				Write-Host ($spellOutTable | Out-String)
+				Write-Host "Final password is:" $finalPassword
+			}
 		}
 		
 		return $finalPassword
