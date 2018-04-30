@@ -1,6 +1,6 @@
 ﻿function New-RandomPassword
 {
-<#
+	<#
 	.SYNOPSIS
 		Generates a new strong random password
 	
@@ -148,7 +148,7 @@
 
     	Similar to Example 2 just will generate a password containing 3 symbols in
 		addition to 6 Uppercase letters and 6 Lowercase letters
-#>
+	#>
 	
 	[CmdletBinding(DefaultParameterSetName = 'Default',
 				   ConfirmImpact = 'Medium',
@@ -442,5 +442,7 @@
 			Write-Host ($spellOutTable | Out-String)
 			Write-Host "Final password is:" $finalPassword
 		}
+		
+		return $finalPassword
 	}
 }
